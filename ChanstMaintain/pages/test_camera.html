@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>调用手机摄像头</title>
+</head>
+<body>
+  <video id="video" width="640" height="480" autoplay></video>
+  <button id="snap">拍照</button>
+  <canvas id="canvas" width="640" height="480"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const snap = document.getElementById('snap');
+
+    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+      .then(function(stream) {
+        video.srcObject = stream;
+        video.play();
+      })
+      .catch(function(err) {
+        console.log("发生错误： " + err.name);
+      });
+
+    snap.addEventListener('click', function() {
+      context.drawImage(video, 0, 0, 640, 480);
+    });
+  </script>
+</body>
+</html>

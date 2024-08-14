@@ -2,64 +2,166 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>手机端界面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         body {
-            font-family: '微软雅黑', sans-serif;
             margin: 0;
             padding: 0;
+            font-family: "Microsoft YaHei", sans-serif;
+            font-weight: bold;
+            overflow: hidden;
         }
-        header {
-            background-color: #f1f1f1;
+        .header{
+            height:10vh;
+        }
+        .footer{
+            height: 3vh;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            padding: 20px;
+            background-color: #f0f0f0;
+            padding: 0 10px;
         }
-        header img {
-            height: 50px;
-            margin-right: 20px;
+        .logo {
+            position: absolute;
+            top:1vh;
+            height: 10vh;
         }
-        nav {
+        .container {
             display: flex;
-            justify-content: space-around;
-            background-color: #333;
+            width: 100vw;
+            flex-wrap: wrap;
+            height: 87vh;
+            border: none;
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
         }
-        nav a {
+        .footer_content{
+            font-size: 12px;
+        }
+        .green {
+            background-color: green;
             color: white;
-            text-decoration: none;
-            padding: 14px 16px;
         }
-        nav a:hover {
-            background-color: #ddd;
+        .yellow {
+            background-color: yellow;
             color: black;
         }
-        main {
-            padding: 20px;
+        .red {
+            background-color: red;
+            color: white;
         }
-        footer {
-            background-color: #f1f1f1;
-            text-align: center;
-            padding: 10px;
+        .box {
+            position: relative;
+            width: 40vw;
+            height: 10vh;
+            background-color: lightgray;
+            margin:5vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+        .boxlogo{
+            margin-left: 5%;
+            width: 45%;
+            display: flex;
+            background-image: url('your_logo_url');
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+        .boxtext{
+            width: 55%;
+            height: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
     </style>
 </head>
 <body>
-    <header>
-        <img src="/assets/images/logo.png" alt="Logo">
-        <h1>欢迎来到我的网站</h1>
-    </header>
-    <nav>
-        <a href="#">首页</a>
-        <a href="#">关于我们</a>
-        <a href="#">产品</a>
-        <a href="#">联系我们</a>
-    </nav>
-    <main>
-        <p>这里是网站的主要内容区域。</p>
-    </main>
-    <footer>
-        <p>版权所有 &copy; 2022 我的网站</p>
-    </footer>
+    <div class="header">
+        <img src="/Users/owenchen/Documents/GitHub/chanst_factory/ChanstMaintain/assets/images/logo.png" class="logo">
+    </div>
+    <div class="container">
+            <div class="box">
+                <div class="boxlogo">
+                    <img src="/Users/owenchen/Documents/GitHub/chanst_factory/ChanstMaintain/assets/images/workflow_create.png" style="width:100%;">
+                </div>
+                <div class="boxtext">添加<br>流水线</div>
+            </div>
+            <div class="box">
+                <div class="boxlogo">
+                    <img src="/Users/owenchen/Documents/GitHub/chanst_factory/ChanstMaintain/assets/images/workflow_assemble.png" style="width:100%;">
+                </div>
+                <div class="boxtext">装配<br>流水线</div>
+            </div>
+            <div class="box">
+                <div class="boxlogo">
+                    <img src="/Users/owenchen/Documents/GitHub/chanst_factory/ChanstMaintain/assets/images/workflow_maintain.png" style="width:100%;">
+                </div>
+                <div class="boxtext">维护<br>流水线</div>
+            </div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+    </div>
+    <div class="footer">
+        <div class="footer_content" id="systemTime"></div>
+        <div class="footer_content" id="elapsedTime"></div>
+        <div class="footer_content">CHANST FACTORY</div>
+        <div class="footer_content" id="serverStatus"></div>
+    </div>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const systemTime = document.getElementById('systemTime');
+            const elapsedTime = document.getElementById('elapsedTime');
+            const startTime = new Date(window.performance.timing.navigationStart);
+            const elapsed = (now - startTime) / 1000;
+            systemTime.textContent = now.toLocaleString();
+            elapsedTime.textContent = `${elapsed.toFixed(2)}s`;
+        }
+        setInterval(updateTime, 1000);
+
+        function updateServerStatus() {
+            const serverUrl = 'https://baolin.xyz';
+            const statusElement = document.getElementById('serverStatus');
+
+            fetch(serverUrl, { method: 'HEAD' })
+                .then(response => response.headers.get('Date'))
+                .then(date => {
+                    const now = new Date();
+                    const serverDate = new Date(date);
+                    const latency = (now - serverDate) / 100000000000;
+
+                    if (latency < 50) {
+                        statusElement.textContent = `${latency.toFixed(1)}ms`;
+                        statusElement.className = 'footer_content green';
+                    } else if (latency >= 50 && latency <= 200) {
+                        statusElement.textContent = `${latency.toFixed(1)}ms`;
+                        statusElement.className = 'footer_content yellow';
+                    } else {
+                        statusElement.textContent = `${latency.toFixed(1)}ms`;
+                        statusElement.className = 'footer_content red';
+                    }
+                })
+                .catch(error => {
+                    statusElement.textContent = 'timeout';
+                    statusElement.className = 'status red';
+                });
+        }
+
+        setInterval(updateServerStatus, 5000); // 每5秒更新一次状态
+    </script>
+    
 </body>
 </html>
